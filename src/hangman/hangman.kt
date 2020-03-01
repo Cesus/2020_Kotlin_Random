@@ -16,28 +16,22 @@ fun main() {
         if (name.isNotBlank()) break
     }
 
-    // Initialize a variable that the user will have to guess
-    var secretWord: String
 
-    // Generate true or false, if false user will have to guess kotlin, if true user will need to guess their own name
-    val flipACoin = Random().nextBoolean()
-    secretWord = when (flipACoin) {
-        true -> name
-        false -> "kotlin"
-    }
+    var secretWord = genRandomWord(name)
 
     // Declare variables
     var gameOver: Boolean ?= false
     var strikes = 0
+    // Find the following solution online
     val secretLetters = secretWord.toLowerCase().toCharArray().toHashSet()
     val correctGuesses = mutableSetOf<Char>()
     val wrongGuesses = mutableSetOf<Char>()
 
     // If player has not guessed all the word, keep iterating
-    while (secretLetters != correctGuesses) {
+    loop@ while (secretLetters != correctGuesses) {
 
         // Check if player has lost or not, if so, exit while loop
-        if (strikes >= 5) {
+        if (strikes >= 6) {
             gameOver = true
             break
         }
@@ -45,7 +39,7 @@ fun main() {
         // Function prints all known letters
         printKnownLetters(secretWord, correctGuesses)
 
-        println("\nWrong Guesses: $wrongGuesses \nTotal: $strikes")
+        println("\nWrong Guesses: $wrongGuesses")
 
         // Ask user for a letter, if it is empty or null, user is told to input 1 letter TODO (no # allowed)
         print("Guess letter: ")
@@ -72,6 +66,23 @@ fun main() {
                 wrongGuesses.add(guess[0].toLowerCase())
                 println("Sorry, there is no $guess")
                 strikes++
+
+                // Print out the hangman
+                when (strikes) {
+                    1 -> println("\n  O\n")
+                    2 -> println("\n  O\n" +
+                            "  |\n")
+                    3 -> println("\n  O\n" +
+                            " -|\n")
+                    4 -> println("\n  O\n" +
+                            " -|-\n")
+                    5 -> println("\n  O\n" +
+                            " -|-\n" +
+                            " / ")
+                    6 -> println("\n  O\n" +
+                            " -|-\n" +
+                            " / \\")
+                }
             }
         }
 
@@ -87,6 +98,24 @@ fun main() {
     }
     else {
         print("AWESOME! $name got it! The word was $secretWord.")
+    }
+}
+
+fun genRandomWord(name: String): String {
+    // Generate random number
+    val numPick = Random().nextInt((10 - 1)) + 1
+    val possibleWords = mutableListOf<String>("kotlin", "jazz", "cat", "dog", "halloween", "christmas", "macdonald", "starbucks", "coffee", name)
+    return when (numPick) {
+        1 -> possibleWords[0]
+        2 -> possibleWords[1]
+        3 -> possibleWords[2]
+        4 -> possibleWords[3]
+        5 -> possibleWords[4]
+        6 -> possibleWords[5]
+        7 -> possibleWords[6]
+        8 -> possibleWords[7]
+        9 -> possibleWords[8]
+        else -> possibleWords[9]
     }
 }
 
